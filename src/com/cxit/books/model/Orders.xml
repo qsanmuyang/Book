@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxit.books.dao.IOrdersDao">
+   <resultMap type="orders" id="ordersMap">
+   <result column="oid" property="oid"/>
+   <result column="userName" property="userName"/>
+   </resultMap>
+   <resultMap type="orders" id="ResultOrders">
+   <result column="oid" property="oid"/>
+   <result column="userName" property="userName"/>
+   <collection property="oitems" column="oid" javaType="ArrayList" ofType="item" 
+   select="selectItems"/>
+   </resultMap>
+   <resultMap type="item" id="itemsMap">
+         <id column="iid" property="iid"/>
+         <result column="oid" property="oid"/>
+         <result column="bid" property="bid"/>
+         <result column="createDate" property="createDate"/>
+         <result column="count" property="count"/>
+         <result column="price" property="price"/>
+         <result column="state" property="state"/>
+         <result column="TOTAL_PRICE" property="total_Price"/> 
+      </resultMap>
+   <select id="selectItems" parameterType="int" resultMap="itemsMap">
+   select * from bs_items where oid=#{oid}
+   </select>
+   <select id="getAllOrders2" resultMap="ResultOrders">
+   select * from bs_orders
+   </select>
+   <select id="getOrders" resultMap="ordersMap">
+   select * from bs_orders
+   </select>
+   <insert id="addOrder" parameterType="orders">
+   insert into bs_orders(oid,userName)
+   values(#{oid},#{userName})
+   </insert>
+   <delete id="deleteOrder" parameterType="orders">
+   delete from bs_orders
+   where oid=#{oid} and userName=#{userName}
+   </delete>
+   <select id="getOrdersByUserName" resultMap="ordersMap">
+   select * from bs_orders
+   where userName=#{userName}
+   </select>
+   <select id="getMaxOid" resultType="int">
+      select MAX(OID) FROM bs_orders
+   </select>
+</mapper>
+

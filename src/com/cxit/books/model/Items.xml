@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxit.books.dao.IitemsDao">
+      <resultMap type="item" id="itemsMap">
+         <id column="iid" property="iid"/>
+         <result column="oid" property="oid"/>
+         <result column="bid" property="bid"/>
+         <result column="createDate" property="createDate"/>
+         <result column="count" property="count"/>
+         <result column="price" property="price"/>
+         <result column="state" property="state"/>
+         <result column="TOTAL_PRICE" property="total_Price"/> 
+      </resultMap>
+      <resultMap type="item" id="ItemsResult">
+      <id column="iid" property="iid"/>
+      <result column="oid" property="oid"/>
+      <result column="bid" property="bid"/>
+      <result column="createDate" property="createDate"/>
+      <result column="count" property="count"/>
+      <result column="price" property="price"/>
+      <result column="state" property="state"/>
+      <result column="TOTAL_PRICE" property="total_Price"/> 
+      <association property="iorders" column="oid" javaType="orders"
+       select="getOrderById"/>
+      </resultMap>
+      <resultMap type="itemData" id="ItemsDataResult">
+      <id column="OID" property="oid"/>
+      <result column="USERNAME" property="userName"/>
+      <result column="BOOKNAME" property="bookName"/>
+      <result column="CREATEDATE" property="createDate"/>
+      <result column="COUNT" property="count"/>
+      <result column="PRICE" property="price"/>
+      <result column="STATE" property="state"/>
+      <result column="TOTAL_PRICE" property="total_Price"/>
+      </resultMap>
+      <resultMap type="shopping" id="ItemsShopping">
+      <result column="iid" property="iid"/>
+      <result column="image" property="image"/>
+      <result column="bookname" property="bookName"/>
+      <result column="count" property="count"/>
+      <result column="price" property="price"/>
+      <result column="oid" property="oid" />
+      <result column="CREATEDATE" property="date"></result>
+      <result column="USERNAME" property="userName"/>
+      </resultMap>
+      <select id="queryShop" parameterType="String" resultMap="ItemsShopping">
+      SELECT i.iid,b.IMAGE,b.BOOKNAME,i.COUNT,i.PRICE FROM bs_orders AS O
+      INNER JOIN bs_items I ON O.OID=I.OID
+      INNER JOIN bs_books B ON I.BID=B.BID
+      WHERE O.OID IN (SELECT OID FROM bs_orders WHERE USERNAME=#{userName}) and  i.STATE=0
+      </select>
+      <select id="queryBuy" parameterType="String" resultMap="ItemsShopping">
+      SELECT i.iid,i.oid,b.IMAGE,i.CREATEDATE,b.BOOKNAME,i.COUNT,i.PRICE,o.USERNAME FROM bs_orders AS O
+      INNER JOIN bs_items I ON O.OID=I.OID
+      INNER JOIN bs_books B ON I.BID=B.BID
+      WHERE O.OID IN (SELECT OID FROM bs_orders WHERE USERNAME=#{userName}) and  i.STATE=1
+      order by i.CREATEDATE desc
+      </select>
+    
+      <select id="queryOrderItems" parameterType="int" resultMap="ItemsDataResult">
+      SELECT o.OID,o.USERNAME, b.BOOKNAME,i.CREATEDATE,i.COUNT,i.PRICE,i.STATE,i.TOTAL_PRICE
+      from bs_orders o
+      INNER JOIN bs_items i ON o.OID = i.OID
+      INNER JOIN bs_books b ON b.BID = i.BID
+      where o.OID=#{oid}
+      </select>
+      <select id="queryItemsByName" parameterType="String" resultMap="ItemsResult">
+      select * from bs_items 
+      WHERE oid in (SELECT oid from bs_orders where USERNAME=#{userName} and  STATE=0)
+      
+      </select>
+      <select id="getOrderById" parameterType="int" resultType="orders">
+      select * from bs_orders where oid=#{oid}
+      </select>
+      <select id="findItem2" parameterType="int" resultMap="ItemsResult">
+      select * from bs_items
+      where IID=#{iid}
+      </select>
+      <select id="getAllItems" resultMap="itemsMap">
+      select * from bs_items
+      </select>
+      <insert id="addItem" parameterType="item">
+      insert into bs_items(iid,oid,bid,createDate,count,price,state,total_price)
+      values(#{iid},#{oid},#{bid},#{createDate},#{count},#{price},#{state},#{total_Price})
+      </insert>
+      <update id="updateItem" parameterType="item">
+      update bs_items
+      <set>
+      <if test="oid!=null">oid=#{oid},</if>
+      <if test="bid!=null">bid=#{bid},</if>
+      <if test="createDate!=null">createDate=#{createDate},</if>
+      <if test="count!=null">count=#{count},</if>
+      <if test="price!=null">price=#{price},</if>
+      <if test="state!=null">state=#{state},</if>
+      <if test="total_Price!=null">total_price=#{total_Price}</if>
+      </set>
+      where iid=#{iid}
+      </update>
+      <update id="updateBuy" parameterType="String">
+      update  bs_items AS b
+      set b.STATE=1
+      WHERE b.OID IN (SELECT OID FROM bs_orders WHERE USERNAME=#{username}) and  b.STATE=0
+      </update>
+      <delete id="deleteItem" parameterType="int">
+      delete from bs_items
+      where iid=#{iid}
+      </delete>
+      <select id="findItem" parameterType="int" resultMap="itemsMap">
+      select * from bs_items
+      where iid=#{iid}
+      </select>
+      <select id="queryItems" parameterType="item" resultMap="itemsMap">
+      select * from bs_items
+      <where>
+      <if test="bid !=0">
+      BID=#{bid}
+      </if>
+      <if test="createDate !=null">
+      or createDate=#{createDate}
+      </if>
+      <if test="price!=0">
+      or PRICE &lt;=#{price}
+      </if>
+      </where>
+      </select>
+      <select id="foreachQuery" resultMap="itemsMap">
+      select * from bs_items where iid in
+      <foreach collection="list" item="idnum" open="(" separator="," close=")">
+      #{idnum}
+      </foreach>
+      </select>
+      <select id="getBuysByName" parameterType="map"  resultMap="ItemsShopping">
+      SELECT i.iid,i.oid,b.IMAGE,i.CREATEDATE,b.BOOKNAME,i.COUNT,i.PRICE,o.USERNAME FROM bs_orders AS O
+      INNER JOIN bs_items I ON O.OID=I.OID
+      INNER JOIN bs_books B ON I.BID=B.BID
+      WHERE O.OID IN (SELECT OID FROM bs_orders WHERE USERNAME=#{userName}) and  i.STATE=1 LIMIT #{begin},#{pageNum}
+      </select>
+</mapper>

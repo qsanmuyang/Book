@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name></display-name>
+  <context-param>
+  <param-name>contextConfigLocation</param-name>
+  <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  
+  <listener>
+  <listener-class>
+  org.springframework.web.context.ContextLoaderListener
+  </listener-class>
+  </listener>
+  <servlet>
+    <servlet-name>UserManagerServlet</servlet-name>
+    <servlet-class>com.cxit.books.servlet.UserManagerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>BooksManagerServlet</servlet-name>
+    <servlet-class>com.cxit.books.servlet.BooksManagerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>OrdersManagerServlet</servlet-name>
+    <servlet-class>com.cxit.books.servlet.OrdersManagerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>ItemsManagerServlet</servlet-name>
+    <servlet-class>com.cxit.books.servlet.ItemsManagerServlet</servlet-class>
+  </servlet>
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>UserManagerServlet</servlet-name>
+    <url-pattern>/servlet/userControl.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>BooksManagerServlet</servlet-name>
+    <url-pattern>/servlet/booksControl.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>OrdersManagerServlet</servlet-name>
+    <url-pattern>/servlet/ordersControl.do</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>ItemsManagerServlet</servlet-name>
+    <url-pattern>/servlet/itemsControl.do</url-pattern>
+  </servlet-mapping>	
+  
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

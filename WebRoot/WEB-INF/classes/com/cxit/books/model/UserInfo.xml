@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace 和 接口类全路径一致 -->
+<mapper namespace="com.cxit.books.dao.IUserInfoDao">
+    <!-- 结果集映射 -->
+    <resultMap type="userinfo" id="usersMap">
+       <id column="userName" property="userName"/>
+       <result column="passWord" property="passWord"/>
+       <result column="email" property="email"/>
+    </resultMap>
+    <!-- 查询得配置节点
+        public List<UserInfo> getAllUsers();
+     -->
+    <select id="getAllUsers" resultMap="usersMap">
+        select * from bs_userinfo
+    </select>
+    <insert id="addUser" parameterType="userinfo" >
+       insert into bs_userinfo(userName,passWord,email)
+       values(#{userName},#{passWord},#{email})
+    </insert>
+    <update id="updateUser" parameterType="userinfo">
+       update bs_userinfo 
+       <set>
+       <if test="passWord!=null">passWord=#{passWord},</if>
+       <if test="email!=null">email=#{email}</if>
+       </set>
+       where userName=#{userName}
+    </update>
+    <delete id="deleteUser" parameterType="String">
+      delete from bs_userinfo 
+      where userName = #{name}
+    </delete>
+    <select id="findUser" parameterType="String" resultMap="usersMap">
+      select * from bs_userinfo 
+      where userName=#{name}
+    </select>
+    <select id="findUser2" parameterType="map" resultMap="usersMap">
+      select * from bs_userinfo 
+      where userName=#{n} and passWord=#{p}
+    </select>
+</mapper>

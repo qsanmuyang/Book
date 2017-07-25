@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+ <typeAliases>
+   <typeAlias type="com.cxit.books.model.UserInfo" alias="userinfo"/>
+   <typeAlias type="com.cxit.books.model.Books" alias="book"/>
+   <typeAlias type="com.cxit.books.model.Items" alias="item"/>
+   <typeAlias type="com.cxit.books.model.Orders" alias="orders"/>
+   <typeAlias type="com.cxit.books.model.ItemsData" alias="itemData"/>
+   <typeAlias type="com.cxit.books.model.shopping" alias="shopping"/>
+ </typeAliases>
+<!-- 环境变量配置集合 -->
+  <environments  default="dev">
+  <!-- 一个环境变量得配置 -->
+   <environment  id="dev">
+   <!-- 声明事务管理 -->
+    <transactionManager type="JDBC"/>
+    <!-- 数据源配置 POOLED 数据连接池 -->
+     <dataSource type="POOLED">
+     <!-- 指定连接驱动 -->
+      <property name="driver" value="com.mysql.jdbc.Driver"/>
+      <!-- 指定数据库得连接URL字符串 -->
+      <property name="url" value="jdbc:mysql://127.0.0.1:3306/books?characterEncoding=UTF-8"/>
+      <property name="username" value="root"/>
+      <property name="password" value=""/>
+     </dataSource>
+   </environment>
+  <!--
+  <environment id="product">
+  
+  </environment>-->
+  </environments>
+  <!-- 所有ORM映射文件 -->
+  <mappers>
+    <mapper resource="com/cxit/books/model/UserInfo.xml"/>
+    <mapper resource="com/cxit/books/model/Books.xml"/>
+    <mapper resource="com/cxit/books/model/Items.xml"/>
+    <mapper resource="com/cxit/books/model/Orders.xml"/>
+  </mappers>
+</configuration>
